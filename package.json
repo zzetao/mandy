@@ -1,0 +1,39 @@
+{
+  "name": "mandy",
+  "version": "0.1.0",
+  "description": "前端部署工具",
+  "preferGlobal": true,
+  "main": "index.js",
+  "bin": {
+    "mandy": "bin/mandy"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "zzetao <izzetao@gmail.com>",
+  "keywords": [
+    "deploy",
+    "rollback"
+  ],
+  "homepage": "https://github.com/zzetao/mandy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zzetao/mandy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zzetao/mandy/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "moment": "^2.18.1",
+    "ora": "^1.2.0",
+    "read": "^1.0.7",
+    "shelljs": "^0.7.7",
+    "ssh2": "^0.5.4",
+    "yargs": "^7.1.0"
+  }
+}

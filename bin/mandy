@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+const pkg = require('../package.json'),
+    argv = require('yargs'),
+    handler = require('./main.js');
+
+argv
+    .usage('Usage: $0 <command> <environment>')
+    .command(
+        ['deploy <environment>', 'd'],
+        'Run the deployment command',
+        {},
+        handler
+    )
+    .example('$0 deploy production', ' // Deploy to the production environment')
+    .command(
+        ['rollback <environment>', 'r'],
+        'Run the rollback command',
+        {},
+        handler
+    )
+    .example(
+        '$0 rollback production',
+        ' // Rollback to the production environment'
+    )
+    .command(
+        ['generate <environment>', 'g'],
+        'Generate the environment configuration file',
+        () => {},
+        handler
+    )
+    .command(
+        ['*'],
+        'the default command'
+    )
+    .default('help')
+    .help('h')
+    .alias('h', 'help')
+    .epilog('@zzetao Copyright 2017')
+    .version(pkg.version)
+    .wrap(0).argv;
