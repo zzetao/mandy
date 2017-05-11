@@ -24,7 +24,7 @@ module.exports = argms => {
 			shell.cp('-R', templatePath, configPath);
 
 			spinner.succeed('Generate complete');
-			log.g(`\nPath: ${templatePath}\n`);
+			log.g(`\nPath: ${configPath}\n`);
 			break;
 		default:
 			let config = getConfig(environment);
