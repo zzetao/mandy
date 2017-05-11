@@ -1,7 +1,7 @@
 {
   "name": "mandy",
-  "version": "0.1.0",
-  "description": "前端部署工具",
+  "version": "0.1.1",
+  "description": "📦 前端自动化部署工具",
   "preferGlobal": true,
   "main": "index.js",
   "bin": {
