@@ -6,18 +6,25 @@ module.exports = mandy => {
   let { log, config, core, connection, utils, tips } = mandy;
   let { randomCode } = core, reporter;
 
+  // 部署信息
   tips.deployInfo();
+
+  // 验证码
   randomCode()
     .then(() => {
       console.log();
       reporter = new Reporter('Deploy start...');
       reporter.log = '>> 🤗  Deploy start ~';
+
       startDeploy();
     })
     .catch((err, code) => {
       log.err('验证码错误');
     });
 
+  /**
+   * [0] Start
+   */
   function startDeploy() {
     reporter.text = 'Mkdir Release';
     return mkdirRelease()
@@ -50,7 +57,7 @@ module.exports = mandy => {
    * [1] 建立文件夹
    */
   function mkdirRelease() {
-    let command = `mkdir -p ${config.deployTo}/releases/${config.releaseDirname}`;
+    let command = `mkdir -p ${config.deployToWorkspace}/releases/${config.releaseDirname}`;
 
     return connection.exec(command).then(res => {
       let { stdout, stderr } = res;
@@ -65,11 +72,13 @@ module.exports = mandy => {
    * [2] 上传待发布的文件
    */
   function uploadRelease() {
-    let { workspace, releaseSize, deployTo, releaseDirname } = config;
+    let { workspace, releaseSize, deployToWorkspace, releaseDirname } = config;
     let { getDirs } = mandy.utils;
 
-    let dir = workspace.replace(path.resolve() + '/', '');
-    let { directorys, files } = getDirs(dir);
+    let workspaceBasename = path.resolve(workspace);
+
+    // 获取待上传文件及目录数组
+    let { directorys, files } = getDirs(workspaceBasename);
 
     let fileCount = files.length;
 
@@ -77,36 +86,47 @@ module.exports = mandy => {
 
     if (directorys.length > 0 && fileCount > 0) {
       return mkdirDirectory(directorys).then(res => {
-        return uploadFile(files);
+        return uploadFiles(files);
       });
     } else {
-      return uploadFile(files);
+      return uploadFiles(files);
     }
 
-    async function uploadFile(files) {
+    async function uploadFiles(files) {
       let sftp = connection.requestSFTP();
       let startTime = new Date();
       for (let i = 0, len = fileCount; i < len; i++) {
-        let file = files[i];
-        let tempFilePath = file.replace(dir + '/', '');
+        let fileAbsolutePath = files[i];
+        let fileRelativePath = fileAbsolutePath.replace(workspaceBasename + '/', '');
+
+        // build/filename.html -> ${deployToWorkspace}/release/${releaseDirname}/filename.html
         let remotePath = path.join(
-          deployTo,
+          deployToWorkspace,
           'releases',
           `${releaseDirname}`,
-          tempFilePath
+          fileRelativePath
         );
 
-        reporter.text = `Uploading ${i} of ${fileCount} files: ${tempFilePath}`;
+        reporter.text = `Uploading ${i+1} of ${fileCount} files: ${fileRelativePath}`;
 
-        await connection.putFile(file, remotePath, {}, sftp);
+        await connection.putFile(fileAbsolutePath, remotePath, {}, sftp);
       }
 
       let relativeTime = moment(startTime).fromNow();
       reporter.log = `>> 👏  Upload complete (${relativeTime})`;
     }
+
+    /**
+     * 批量建立文件夹
+     * @param  {Array} directorys  目录数组
+     * @return Promise
+     */
     function mkdirDirectory(directorys) {
+      /**
+       *  ['folder1', 'folder2', 'folder3'] => 'folder1 folder2 folder3'
+       */
       let directoryJoin = directorys
-        .map(dir => path.join(deployTo, 'releases', `${releaseDirname}`, dir))
+        .map(dir => path.join(deployToWorkspace, 'releases', `${releaseDirname}`, dir))
         .join(' ');
       let mkdirDirectoryCommand = `mkdir -p ${directoryJoin}`;
       return connection.exec(mkdirDirectoryCommand).then(res => {
@@ -117,11 +137,12 @@ module.exports = mandy => {
       });
     }
   }
+
   /**
    * [3] 清除旧版本
    */
   function clearOldRelease() {
-    let command = `(ls -rd ${config.deployTo}/releases/*|head -n ${config.keepReleases};ls -d ${config.deployTo}/releases/*)|sort|uniq -u|xargs rm -rf`;
+    let command = `(ls -rd ${config.deployToWorkspace}/releases/*|head -n ${config.keepReleases};ls -d ${config.deployToWorkspace}/releases/*)|sort|uniq -u|xargs rm -rf`;
 
     return connection.exec(command).then(res => {
       let { stdout, stderr } = res;
@@ -132,22 +153,33 @@ module.exports = mandy => {
     });
   }
 
+  /**
+   * [4] 更新软链
+   */
   function updateSymbolicLink() {
-    let command = `cd ${config.deployTo} && ln -nfs releases/${config.releaseDirname} current`;
+    let prevPath = path.resolve(config.deployTo, '../');
+    let currentRelease = path.resolve(
+      config.deployToWorkspace,
+      `releases/${config.releaseDirname}`
+    );
+    let command = `cd ${prevPath} && ln -nfs ${currentRelease} ${config.deployToBasename}`;
     return connection.exec(command).then(res => {
       let { stdout, stderr } = res;
       if (stderr) {
         throw log.err(stderr);
       }
-      reporter.log = `>> 🔨  Symbolic link: releases/${config.releaseDirname} -> current`;
+      reporter.log = `>> 🔨  Symbolic link: releases/${config.releaseDirname} -> ${config.deployToBasename}`;
     });
   }
 
+  /**
+   * [5] 写入日志
+   */
   function writeDeployLog() {
     let deployTime = moment(config.releaseDirname, 'YYYYMMDDHHmmss').format(
       'YYYY-MM-DD HH:mm:ss'
     );
-    let command = `cd ${config.deployTo} && if [ -f VERSION ]; then cat VERSION; fi`;
+    let command = `cd ${config.deployToWorkspace} && if [ -f VERSION ]; then cat VERSION; fi`;
 
     // 获取当前版本号
     return connection
@@ -164,7 +196,7 @@ module.exports = mandy => {
 
         // 写入新的日志到 deploy.log;
         // 写入当前版本号到 VERSION;
-        let writeLogCommand = `echo "${line}" >> ${config.deployTo}/deploy.log && echo ${version} > ${config.deployTo}/VERSION`;
+        let writeLogCommand = `echo "${line}" >> ${config.deployToWorkspace}/deploy.log && echo ${version} > ${config.deployToWorkspace}/VERSION`;
         return connection.exec(writeLogCommand);
       })
       .then(res => {

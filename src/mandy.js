@@ -53,7 +53,9 @@ class Mandy {
       author: this.core.author(),
       releaseSize: getDirSize(config.workspace),
       releaseCreateTime: getDirCreateTime(config.workspace), // todo ...
-      releaseDirname: this.core.generateReleaseDirname()
+      releaseDirname: this.core.generateReleaseDirname(),
+      deployToWorkspace: `${config.deployTo}-mandy`,
+      deployToBasename: path.basename(config.deployTo)
     };
     let ssh = new SSH(config.ssh, conn => {
       // log.g('🔗  ssh 连接成功');
