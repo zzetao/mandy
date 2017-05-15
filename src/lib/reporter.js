@@ -19,6 +19,9 @@ class Reporter {
   fail(msg) {
     this.spinner.fail(msg || null);
   }
+  stop() {
+    this.spinner.stop();
+  }
 }
 
 module.exports = Reporter;
