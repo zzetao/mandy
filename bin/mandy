@@ -1,39 +1,29 @@
 #!/usr/bin/env node
 const pkg = require('../package.json'),
-    argv = require('yargs'),
-    handler = require('./main.js');
+  argv = require('yargs'),
+  handler = require('./main.js');
 
 argv
-    .usage(`Usage: ${pkg.name} <command> <environment>`)
-    .command(
-        ['deploy <environment>'],
-        'Run the deployment command',
-        {},
-        handler
-    )
-    .example(`${pkg.name} deploy production`, ' // Deploy to the production environment')
-    .command(
-        ['rollback <environment>'],
-        'Run the rollback command',
-        {},
-        handler
-    )
-    .example(
-        `${pkg.name} rollback production`,
-        ' // Rollback to the production environment'
-    )
-    .command(
-        ['generate <environment>'],
-        'Generate the environment configuration file',
-        {},
-        handler
-    )
-    .command(
-        ['*'],
-        'the default command'
-    )
-    .help('h')
-    .alias('h', 'help')
-    .epilog('@zzetao Copyright 2017')
-    .version(pkg.version)
-    .wrap(0).argv;
+  .usage(`Usage: ${pkg.name} <command> <environment>`)
+  .command(['deploy <environment>'], 'Run the deployment command', {}, handler)
+  .example(
+    `${pkg.name} deploy production`,
+    ' // Deploy to the production environment'
+  )
+  .command(['rollback <environment>'], 'Run the rollback command', {}, handler)
+  .example(
+    `${pkg.name} rollback production`,
+    ' // Rollback to the production environment'
+  )
+  .command(
+    ['generate <environment>'],
+    'Generate the environment configuration file',
+    {},
+    handler
+  )
+  .command(['*'], 'the default command')
+  .help('h')
+  .alias('h', 'help')
+  .epilog('@zzetao Copyright 2017')
+  .version(pkg.version)
+  .wrap(0).argv;
