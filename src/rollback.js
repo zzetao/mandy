@@ -4,29 +4,36 @@ const Reporter = require('./lib/reporter'),
 
 module.exports = mandy => {
   let { log, config, core, connection, utils, tips } = mandy;
-  let { inputReleasesSN } = core;
-
+  let { inputReleaseSN } = core;
+  
   let reporter = new Reporter('Get current release');
-  let serverReleases = getReleases();
-  let serverCurrentRelease = getCurrentRelease();
+  startRollback();
 
-  if (!serverReleases || serverReleases.length === 0) {
-    log.err('🤖  回滚失败，无可用的回滚版本');
+  async function startRollback() {
+
+    let serverReleases = await getReleases();
+    let serverCurrentRelease = await getCurrentRelease();
+
+    if (!serverReleases || serverReleases.length === 0) {
+      log.err('🤖  回滚失败，无可用的回滚版本');
+    }
+
+    mandy.config = Object.assign(mandy.config, {
+      serverCurrentRelease,  // 当前版本
+      serverReleases
+    })
+
+    tips.rollbackInfo(); // 显示信息
+
+    inputReleaseSN().then(release => {
+      console.log(release)
+    })
+    .catch(log.err)
   }
 
-  mandy.config = Object.assign(mandy.config, {
-    serverCurrentRelease,  // 当前版本
-    serverReleases
-  })
-
-  tips.rollbackInfo();
-  inputReleasesSN().then(release => {
-    console.log(release)
-  })
-  
   /**
    * 获取所有版本
-   * @return {Array}
+   * @return {Promise} -> {Array}
    */
   async function getReleases() {
     let command = `ls -r ${config.deployToWorkspace}/releases`;
@@ -46,7 +53,7 @@ module.exports = mandy => {
 
   /**
    * 获取当前版本
-   * @return {String}
+   * @return {Promise} -> {String}
    */
   async function getCurrentRelease() {
     let command = `readlink ${config.deployTo} `;

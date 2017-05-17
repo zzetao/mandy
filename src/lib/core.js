@@ -39,17 +39,17 @@ module.exports = function(mandy) {
     });
   }
 
-  function inputReleasesSN() {
-    let { serverRelease } = mandy.config;
+  function inputReleaseSN() {
+    let { serverReleases } = mandy.config;
 
     return new Promise((resolve, reject) => {
       read({ prompt: '请输入回滚版本序号: '}, (err, sn) => {
-        let release = serverRelease[sn];
+        let release = serverReleases[sn];
         if (!release) {
           return reject('请选择正确的序号');
         }
         
-        read({ prompt: `确定回滚该版本? [${sn}] ${release}  (Y/N): `}, (err, yes) => {
+        read({ prompt: `确定回滚该版本? [${sn}] (Y/N): `}, (err, yes) => {
           if (['y', 'Y'].indexOf(yes) === -1) {
             return reject('取消回滚操作');
           }
@@ -64,6 +64,6 @@ module.exports = function(mandy) {
     generateReleaseDirname,
     author,
     randomCode,
-    inputReleasesSN
+    inputReleaseSN
   };
 };

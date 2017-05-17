@@ -1,4 +1,5 @@
 const moment = require('moment');
+const Table = require('cli-table');
 
 module.exports = mandy => {
   return {
@@ -41,15 +42,23 @@ module.exports = mandy => {
     rollbackInfo: () => {
       let { log, config } = mandy;
       let { serverCurrentRelease, serverReleases } = config;
+      var table = new Table({
+        head: ['sn', 'Release name', 'sn', 'Release name']
+      });
 
       let currentReleaseTime = moment(serverCurrentRelease, 'YYYYMMDDHHmmss').format('MM-DD hh:mm:ss');
 
-      let selectReleaseList = "\n";
+      let tempArr = [];
       for(let i = 0, len = serverReleases.length; i < len; i++) {
         let release = serverReleases[i];
         let formatDate = moment(release, 'YYYYMMDDHHmmss').format('MM-DD hh:mm:ss');
-        let wrap = i%3 === 0 ? '\n' : '';
-        selectReleaseList += `[${i+1}] ${release} (${formatDate}) ${wrap}`;
+        let result = `${release} (${formatDate})`;
+        tempArr.push(i + 1);
+        tempArr.push(result);
+        if (tempArr.length === 4) {
+          table.push(tempArr);
+          tempArr = [];
+        }
       }
 
       // 输出回滚信息
@@ -63,7 +72,7 @@ module.exports = mandy => {
   > 操作人：${config.author}
       `);
       log.g('\n📦  可回滚版本:');
-      log.g(selectReleaseList)
+      console.log(table.toString())
 
     }
   };
