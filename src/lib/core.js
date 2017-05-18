@@ -44,7 +44,7 @@ module.exports = function(mandy) {
 
     return new Promise((resolve, reject) => {
       read({ prompt: '请输入回滚版本序号: '}, (err, sn) => {
-        let release = serverReleases[sn];
+        let release = serverReleases[sn-1];
         if (!release) {
           return reject('请选择正确的序号');
         }

@@ -42,24 +42,26 @@ module.exports = mandy => {
     rollbackInfo: () => {
       let { log, config } = mandy;
       let { serverCurrentRelease, serverReleases } = config;
-      var table = new Table({
+      var releasesTable = new Table({
         head: ['sn', 'Release name', 'sn', 'Release name']
       });
 
       let currentReleaseTime = moment(serverCurrentRelease, 'YYYYMMDDHHmmss').format('MM-DD hh:mm:ss');
-
+    
       let tempArr = [];
       for(let i = 0, len = serverReleases.length; i < len; i++) {
         let release = serverReleases[i];
+
         let formatDate = moment(release, 'YYYYMMDDHHmmss').format('MM-DD hh:mm:ss');
         let result = `${release} (${formatDate})`;
         tempArr.push(i + 1);
         tempArr.push(result);
         if (tempArr.length === 4) {
-          table.push(tempArr);
+          releasesTable.push(tempArr);
           tempArr = [];
         }
       }
+      tempArr.length > 0 && releasesTable.push(tempArr);
 
       // 输出回滚信息
       log.g('\n🛠  回滚信息：');
@@ -72,7 +74,7 @@ module.exports = mandy => {
   > 操作人：${config.author}
       `);
       log.g('\n📦  可回滚版本:');
-      console.log(table.toString())
+      console.log(releasesTable.toString())
 
     }
   };
