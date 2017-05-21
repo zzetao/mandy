@@ -50,11 +50,11 @@ module.exports = mandy => {
 
   function writeRollbackLog(rollbackReleaseName) {
     // 日志路径
-    let deployLogPath = `${config.deployToWorkspace}/deploy.log`;
+    let deployLogPath = `${config.deployToWorkspace}/mandy.log`;
 
     // 获取回滚版本的部署日志
     // 查找是部署的日志且反查出一行
-    let getDeployLogCommand = `grep "^\\[2" ${deployLogPath} | grep "${rollbackReleaseName}" | tail -1`;
+    let getDeployLogCommand = `grep "^\\[Deploy]" ${deployLogPath} | grep "${rollbackReleaseName}" | tail -1`;
     let getVersionCommand = `cd ${config.deployToWorkspace} && if [ -f VERSION ]; then cat VERSION; fi`;
 
     return (
@@ -75,7 +75,7 @@ module.exports = mandy => {
           ++version;
 
           let time = moment().format('YYYY-MM-DD HH:mm:ss');
-          let newReleaseDeployLog = `[Rollback] Time: ${time} Author: ${config.author} Version: ${version} -> ${releaseDeployLog}`;
+          let newReleaseDeployLog = `[Rollback] Time: ${time}; Author: ${config.author}; Version: ${version}; -> ${releaseDeployLog}`;
 
           return [version, newReleaseDeployLog];
         })

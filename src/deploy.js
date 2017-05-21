@@ -192,11 +192,11 @@ module.exports = mandy => {
         let version = res.stdout.toString().trim() || 0;
         ++version;
 
-        let line = `[${deployTime}] Author: ${config.author}; Release: ${config.releaseDirname}; Release Size: ${config.releaseSize} bytes; Version: ${version};`;
+        let line = `[Deploy] Time: ${deployTime}; Author: ${config.author}; Release: ${config.releaseDirname}; Release Size: ${config.releaseSize} bytes; Version: ${version};`;
 
-        // 写入新的日志到 deploy.log;
+        // 写入新的日志到 mandy.log;
         // 写入当前版本号到 VERSION;
-        let writeLogCommand = `echo "${line}" >> ${config.deployToWorkspace}/deploy.log && echo ${version} > ${config.deployToWorkspace}/VERSION`;
+        let writeLogCommand = `echo "${line}" >> ${config.deployToWorkspace}/mandy.log && echo ${version} > ${config.deployToWorkspace}/VERSION`;
         return connection.exec(writeLogCommand);
       })
       .then(res => {
