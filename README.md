@@ -95,11 +95,35 @@ mandy deploy production
 
 
 
+## 配置
+
+在当前目录下建立 `mandy.config.js` 文件，可进行一些工具的自定义配置
+
+
+
+**🌰 例子**
+
+```javascript
+module.exports = {
+  deploy: {
+    info: `部署自定义提醒`
+  },
+  rollback: {
+    info: `回滚自定义提醒`
+  }
+}
+```
+
+
+
+
 ## Todo
 
-- 回滚版本
+- ~~回滚版本~~
 - 查看当前版本信息
 - 更多自定义配置
+- 任务驱动
+- 完善文档
 
 
 
