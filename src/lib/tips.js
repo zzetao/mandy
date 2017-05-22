@@ -4,7 +4,7 @@ const Table = require('cli-table');
 module.exports = mandy => {
   return {
     deployInfo: () => {
-      let { log, config } = mandy;
+      let { log, config, customConfig } = mandy;
 
       // 输出部署信息
       log.g('\n🛠  部署信息：');
@@ -17,12 +17,13 @@ module.exports = mandy => {
   > 待发布文件路径：${config.workspace}
   > 线上部署路径：${config.deployTo}
   > 发布版本名称：${config.releaseDirname}
-  > 操作人：${config.author}
-      `
+  > 操作人：${config.author}`
       );
 
-      // 提醒
-      log.g(
+      if (customConfig.deploy && customConfig.deploy.info) {
+        log.g(customConfig.deploy.info)
+      } else {
+        log.g(
         `
 💬  部署要求：
 
@@ -34,13 +35,15 @@ module.exports = mandy => {
   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝    ╚═╝   
 
                 - 自定义提醒 - 
+
+               ✨  Good luck! ✨
       `
-      );
-      log.g('✨  Good luck! ✨\n');
+        );
+      }
     },
 
     rollbackInfo: () => {
-      let { log, config } = mandy;
+      let { log, config, customConfig } = mandy;
       let { serverCurrentRelease, serverReleases } = config;
       var releasesTable = new Table({
         head: ['sn', 'Release name', 'sn', 'Release name']
@@ -73,6 +76,11 @@ module.exports = mandy => {
   > 线上部署路径：${config.deployTo}
   > 操作人：${config.author}
       `);
+
+      if (customConfig.rollback && customConfig.rollback.info) {
+        log.g(customConfig.rollback.info);
+      }
+
       log.g('\n📦  可回滚版本:');
       console.log(releasesTable.toString())
 

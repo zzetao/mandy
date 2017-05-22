@@ -67,10 +67,22 @@ class Mandy {
     // })
     this.config = Object.assign(config, defaultConfig);
     this.connection = ssh;
+
+    const customConfig = getCustomConfig('mandy.config.js');
+    this.customConfig = utils.isObject(customConfig) ? customConfig : {};
   }
 
   use(name, obj) {
     this[name] = isFunction(obj) ? obj.bind(this, this) : obj;
+  }
+}
+
+function getCustomConfig(fileName) {
+  try {
+    let configPath = path.resolve(fileName);
+    return require(configPath);
+  } catch (e) {
+    // todo 
   }
 }
 
