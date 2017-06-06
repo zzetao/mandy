@@ -8,7 +8,8 @@ const utils = require('./lib/utils'),
   log = require('./lib/log'),
   tips = require('./lib/tips'),
   Deploy = require('./deploy'),
-  Rollback = require('./rollback');
+  Rollback = require('./rollback'),
+  Current = require('./current');
 
 const { isObject, isFunction, getDirSize, getDirCreateTime } = utils;
 
@@ -24,6 +25,7 @@ class Mandy {
 
     this.use('deploy', Deploy);
     this.use('rollback', Rollback);
+    this.use('current', Current);
 
     // 检查 config 完善性
     if (!isObject(config)) {

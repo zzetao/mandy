@@ -21,6 +21,12 @@ argv
     {},
     handler
   )
+  .command(
+    ['current <environment>'],
+    'Display current version information',
+    {},
+    handler
+  )
   .command(['*'], 'the default command')
   .help('h')
   .alias('h', 'help')

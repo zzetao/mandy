@@ -45,7 +45,7 @@ module.exports = mandy => {
     rollbackInfo: () => {
       let { log, config, customConfig } = mandy;
       let { serverCurrentRelease, serverReleases } = config;
-      var releasesTable = new Table({
+      let releasesTable = new Table({
         head: ['sn', 'Release name', 'sn', 'Release name']
       });
 
