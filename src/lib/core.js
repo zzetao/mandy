@@ -60,10 +60,27 @@ module.exports = function(mandy) {
     })
   }
 
+  function inputSshPassword() {
+    let { host, username } = mandy.config.ssh;
+    return new Promise((resolve, reject) => {
+      read({
+        prompt: `${username}@${host}'s password: `,
+        // replace: '*',
+        silent: true,
+      }, (err, password) => {
+        if (!password) {
+          return reject('Please input the ssh password');
+        }
+        resolve(password);
+      })
+    })
+  }
+
   return {
     generateReleaseDirname,
     author,
     randomCode,
-    inputReleaseSN
+    inputReleaseSN,
+    inputSshPassword
   };
 };

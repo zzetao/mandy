@@ -29,7 +29,7 @@ module.exports = argms => {
     default:
       let config = getConfig(environment);
       const mandy = new Mandy(config);
-      mandy[command]();
+      mandy.run(command);
   }
 };
 
