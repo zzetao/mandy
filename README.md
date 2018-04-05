@@ -40,10 +40,11 @@ mandy <command> <environment>
 
 **命令列表**
 
-- mandy deploy          //  部署
-- mandy rollback       //  回滚
-- mandy current        //  当前版本信息
-- ···
+- mandy deploy <environment>         //  部署
+- mandy deployToQiniu <environment>  //  部署到七牛云
+- mandy rollback <environment>       //  回滚
+- mandy current <environment>        //  当前版本信息
+- mandy generate                     //  生成配置文件
 
 
 
@@ -73,9 +74,17 @@ module.exports = {
     // privateKey: '/Users/zzetao/.ssh/id_rsa'
     // 更多配置：https://github.com/mscdex/ssh2#client-methods
   },
-  keepReleases: 10    // 保存历史版本数量
+  qiniu: {
+    accessKey: 'key',
+    secretKey: 'key',
+    bucket: 'name',  // 存储空间名称
+    bucketDomain: 'http://xxx.qiniudn.com',
+    ignoreFiles: ['*.map', '*.html', './dist/**.js']
+  },
+  keepReleases: 10,    // 保存历史版本数量
   workspace: 'build', // {相对路径}  本地待发布文件目录
   deployTo: '/var/www/front_end/github.com', // {绝对路径}  线上部署目录
+  qiniuDeployTo: '/static', // {绝对路径} 七牛云将部署到该目录
 }
 ```
 
@@ -91,13 +100,13 @@ mandy deploy production
 
 
 
-  **enjoy ~**
+**enjoy ~**
 
 
 
 ## 配置
 
-在当前目录下建立 `mandy.config.js` 文件，可进行一些工具的自定义配置
+在当前目录下建立 `mandy.config.js` 文件，可进行自定义配置
 
 
 

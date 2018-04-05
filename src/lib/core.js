@@ -14,9 +14,9 @@ module.exports = function(mandy) {
 
   /**
    * 获取姓名
-   * @return string
+   * @return {string}
    */
-  function author() {
+  function getAuthorName() {
     let localGitUserName = shell.exec('git config user.name', { silent: true });
     return localGitUserName
       ? (localGitUserName || '').trim()
@@ -78,7 +78,7 @@ module.exports = function(mandy) {
 
   return {
     generateReleaseDirname,
-    author,
+    getAuthorName,
     randomCode,
     inputReleaseSN,
     inputSshPassword
