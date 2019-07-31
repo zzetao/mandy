@@ -9,24 +9,26 @@ module.exports = mandy => {
   // 部署信息
   tips.deployInfo();
 
-  // 验证码
-  randomCode()
-    .then(() => {
-      console.log();
-      reporter = new Reporter('Deploy start...');
-      reporter.log = '>> 🤗  Deploy start ~';
 
-      startDeploy();
-    })
+  if (!config.verify) {
+    startDeploy();
+  } else {
+    // 验证码
+    randomCode()
+    .then(() => startDeploy())
     .catch((err, code) => {
       log.err('验证码错误');
     });
+  }
 
   /**
    * [0] Start
    */
   function startDeploy() {
+    reporter = new Reporter('Deploy start...');
+    reporter.log = '>> 🤗  Deploy start ~';
     reporter.text = 'Mkdir Release';
+    
     return mkdirRelease()
       .then(res => {
         reporter.text = 'Upload Files';
