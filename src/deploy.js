@@ -9,8 +9,9 @@ module.exports = mandy => {
   // 部署信息
   tips.deployInfo();
 
+  const noVerify = !config.verify && config.verify != undefined;
 
-  if (!config.verify) {
+  if (noVerify) {
     startDeploy();
   } else {
     // 验证码

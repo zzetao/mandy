@@ -28,6 +28,12 @@ yarn global add mandy
 yarn add mandy --dev
 ```
 
+## 其他安装
+
+```Bash
+git clone 
+npm link
+```
 
 
 ## 使用
@@ -76,7 +82,7 @@ module.exports = {
   keepReleases: 10    // 保存历史版本数量
   workspace: 'build', // {相对路径}  本地待发布文件目录
   deployTo: '/var/www/front_end/github.com', // {绝对路径}  线上部署目录
-  verify: false // 是否需要输入验证码验证，默认false
+  verify: true // 是否需要输入验证码验证，默认true
 }
 ```
 
@@ -123,6 +129,7 @@ module.exports = {
 - ~~回滚版本~~
 - ~~查看当前版本信息~~
 - ~~任务驱动~~
+- ~~部署到多台机器~~
 - 更多自定义配置
 - 完善文档
 - 调整错误信息抛出
