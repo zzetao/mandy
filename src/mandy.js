@@ -64,6 +64,7 @@ class Mandy {
 
     this.config = Object.assign(config, defaultConfig);
 
+    // @deprecated
     const customConfig = getCustomConfig('mandy.config.js');
     this.customConfig = utils.isObject(customConfig) ? customConfig : {};
 

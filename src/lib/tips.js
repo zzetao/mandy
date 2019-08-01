@@ -4,7 +4,7 @@ const Table = require('cli-table');
 module.exports = mandy => {
   return {
     deployInfo: () => {
-      let { log, config, customConfig } = mandy;
+      let { log, config } = mandy;
 
       // 输出部署信息
       log.g('\n🛠  部署信息：');
@@ -43,7 +43,7 @@ module.exports = mandy => {
     },
 
     rollbackInfo: () => {
-      let { log, config, customConfig } = mandy;
+      let { log, config } = mandy;
       let { serverCurrentRelease, serverReleases } = config;
       let releasesTable = new Table({
         head: ['sn', 'Release name', 'sn', 'Release name']
