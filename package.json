@@ -28,10 +28,10 @@
   "dependencies": {
     "cli-table": "^0.3.1",
     "colors": "^1.1.2",
-    "moment": "^2.18.1",
+    "moment": "^2.27.0",
     "ora": "^1.2.0",
     "read": "^1.0.7",
-    "shelljs": "^0.7.7",
+    "shelljs": "^0.8.4",
     "ssh2": "^0.5.4",
     "yargs": "^7.1.0"
   }
